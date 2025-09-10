@@ -8,7 +8,7 @@ High High School Adventure for SDL2
 ## 遊び方
 データファイルを AppData\Local\HHSAdvSDL の下に置いてください。
 
-ビルドには net9.0 フレームワークへの依存性があります。
+ビルドには net8.0 フレームワークへの依存性があります。
 また SDL2-CS.dllにも依存しています。
 
 実行時には SDL2-CS.dll, SDL2.dll, SDL2_ttf.dll, SDL2_image.dll, SDL2_mixer.dllへの依存があるので、それらをバイナリと同じフォルダーに置いてください。

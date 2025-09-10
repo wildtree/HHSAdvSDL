@@ -56,7 +56,6 @@ namespace HHSAdvSDL
             }
 
             bool quit = false;
-            SDL.SDL_Event e;
             int scrollOffset = 0;
 
             uint frameDelay = 1000 / 60; // 60fps
@@ -66,13 +65,6 @@ namespace HHSAdvSDL
             while (!quit)
             {
                 frameStart = SDL.SDL_GetTicks();
-/*
-                while (SDL.SDL_PollEvent(out e) != 0)
-                {
-                    if (e.type == SDL.SDL_EventType.SDL_QUIT)
-                        quit = true;
-                }
-*/
                 // 背景クリア
                 SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL.SDL_RenderClear(renderer);
