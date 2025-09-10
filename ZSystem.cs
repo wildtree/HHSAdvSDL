@@ -34,6 +34,7 @@ namespace HHSAdvSDL
         private ZMessage? msgs = null;
         private ZRules? rules = null;
         private ZAudio? audio = null;
+        private ZProperties properties = new ZProperties();
 
         private string[] credits = {
             @"High High School Adventure",
@@ -129,6 +130,9 @@ namespace HHSAdvSDL
         };
         private ZSystem()
         {
+            dataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HHSAdvSDL");
+            properties.Load(Path.Combine(dataFolder, @"HHSAdvSDL.json"));
+
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO|SDL.SDL_INIT_AUDIO);
             if (SDL_ttf.TTF_Init() != 0)
             {
@@ -137,11 +141,16 @@ namespace HHSAdvSDL
                 return;
             }
 
-            string fontFilename = @"C:\Windows\Fonts\YuGothR.ttc";
+            string fontFilename = properties.Attrs.FontPath;
             if (!File.Exists(fontFilename))
             {
-                fontFilename = @"/usr/share/fonts/truetype/fonts-japanese-gothic.ttf";
+                fontFilename = @"C:\Windows\Fonts\msgothic.ttc";
+                if (!File.Exists(fontFilename))
+                {
+                    fontFilename = @"/usr/share/fonts/truetype/fonts-japanese-gothic.ttf";
+                }
             }
+            properties.Attrs.FontPath = fontFilename;
             font = SDL_ttf.TTF_OpenFont(fontFilename, 14);
             if (font == IntPtr.Zero)
             {
@@ -198,7 +207,6 @@ namespace HHSAdvSDL
             dialog = new ZModalDialog(renderer, PADDING, 0, BITMAP_W - 2 * PADDING, BITMAP_H);
             dialog.TextFont = font;
             // data folder
-            dataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HHSAdvSDL");
             if (!Directory.Exists(dataFolder))
             {
                 Directory.CreateDirectory(dataFolder);
@@ -382,7 +390,8 @@ namespace HHSAdvSDL
                                 logArea.Add(s);
                                 break;
                             case ZCore.ZCommand.Command.Sound:
-                                audio.Play(o);
+                                if (properties.Attrs.PlaySound)
+                                    audio.Play(o);
                                 break;
                             case ZCore.ZCommand.Command.Dialog:
                                 switch (o)
@@ -444,7 +453,8 @@ namespace HHSAdvSDL
                                         DrawScreen(false);
                                         break;
                                     case 3: // clear
-                                        audio.Play(3);
+                                        if (properties.Attrs.PlaySound)
+                                            audio.Play(3);
                                         ZRoll endroll = new ZRoll(renderer, winW, winH);
                                         endroll.TextFont = font;
                                         endroll.Roll(credits);
@@ -636,9 +646,12 @@ namespace HHSAdvSDL
                 status = GameStatus.Play;
                 SDL.SDL_FlushEvent(SDL.SDL_EventType.SDL_KEYDOWN);
                 SDL.SDL_FlushEvent(SDL.SDL_EventType.SDL_TEXTINPUT);
-                ZRoll openingRoll = new ZRoll(renderer, winW, winH);
-                openingRoll.TextFont = font;
-                openingRoll.Roll(opening);
+                if (properties.Attrs.OpeningRoll)
+                {
+                    ZRoll openingRoll = new ZRoll(renderer, winW, winH);
+                    openingRoll.TextFont = font;
+                    openingRoll.Roll(opening);
+                }
                 DrawScreen(true);
                 return true;
             }
@@ -819,6 +832,7 @@ namespace HHSAdvSDL
                 SDL.SDL_RenderPresent(renderer);
                 SDL.SDL_Delay(16); // ~60fps
             }
+            properties.Save(Path.Combine(dataFolder, @"HHSAdvSDL.json"));
         }
 
         private class TextInputArea
