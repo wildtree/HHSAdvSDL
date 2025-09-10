@@ -275,7 +275,7 @@ namespace HHSAdvSDL
                             switch (Value)
                             {
                                 case 0:
-                                    userData.setFact(1, 0); // 先生はいなくなる
+                                    //userData.setFact(1, 0); // 先生はいなくなる
                                     core.push(ZCommand.Command.Message, 0xee); // ゲームオーバー
                                     core.push(ZCommand.Command.GameOver, 1);
                                     break;

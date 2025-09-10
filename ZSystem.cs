@@ -262,7 +262,6 @@ namespace HHSAdvSDL
         {
             IsDark();
             map.Draw(canvas);
-            canvas.colorFilter();
             if (with_msg && status != GameStatus.GameOver)
             {
                 string s = map.Message;
@@ -302,6 +301,7 @@ namespace HHSAdvSDL
                     logArea.Add(msgs.GetMessage(0xb4));
                 }
             }
+            canvas.colorFilter();
             canvas.Invalidate();
             inputArea.Draw();
             logArea.Draw();
