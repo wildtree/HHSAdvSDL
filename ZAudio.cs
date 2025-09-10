@@ -46,8 +46,15 @@ namespace HHSAdvSDL
                     return;
                 }
                 // 後始末
-                SDL_mixer.Mix_FreeMusic(music);
-                SDL_mixer.Mix_CloseAudio();
+                Task.Run(() =>
+                {
+                    while (SDL_mixer.Mix_PlayingMusic() != 0)
+                    {
+                        SDL.SDL_Delay(100);
+                    }
+                    SDL_mixer.Mix_FreeMusic(music);
+                    SDL_mixer.Mix_CloseAudio();
+                });
             }
         }
     }

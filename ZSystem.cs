@@ -173,6 +173,15 @@ namespace HHSAdvSDL
                 SDL.SDL_DestroyWindow(window);
                 throw new Exception("SDL_CreateRenderer failed");
             }
+            if (SDL_mixer.Mix_Init(SDL_mixer.MIX_InitFlags.MIX_INIT_MP3) == 0)
+            {
+                Console.WriteLine(SDL.SDL_GetError());
+                SDL.SDL_DestroyRenderer(renderer);
+                SDL.SDL_DestroyWindow(window);
+                SDL_ttf.TTF_Quit();
+                SDL.SDL_Quit();
+                throw new Exception("SDL_mixer.Mix_Init failed");
+            }
 
             canvas = new Canvas(renderer);
             inputArea = new TextInputArea(renderer, PADDING, BITMAP_H, BITMAP_W - 2 * PADDING, inputAreaH);
