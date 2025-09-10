@@ -137,7 +137,12 @@ namespace HHSAdvSDL
                 return;
             }
 
-            font = SDL_ttf.TTF_OpenFont(@"C:\Windows\Fonts\YuGothR.ttc", 14);
+            string fontFilename = @"C:\Windows\Fonts\YuGothR.ttc";
+            if (!File.Exists(fontFilename))
+            {
+                fontFilename = @"/usr/share/fonts/truetype/fonts-japanese-gothic.ttf";
+            }
+            font = SDL_ttf.TTF_OpenFont(fontFilename, 14);
             if (font == IntPtr.Zero)
             {
                 Console.WriteLine(SDL.SDL_GetError());
@@ -948,9 +953,9 @@ namespace HHSAdvSDL
             {
                 renderer = r;
                 viewport.x = x;
-                viewport.y = y;
+                viewport.y = y + PADDING;
                 viewport.w = w;
-                viewport.h = h;
+                viewport.h = h - PADDING;
             }
             public void Add(string s)
             {
