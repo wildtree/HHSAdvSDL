@@ -828,6 +828,8 @@ namespace HHSAdvSDL
                     }
                 }
                 canvas.Draw();
+                logArea.Draw();
+                inputArea.Draw();
                 if (dialog.Visible) dialog.Draw();
                 SDL.SDL_RenderPresent(renderer);
                 SDL.SDL_Delay(16); // ~60fps

@@ -4,8 +4,6 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HHSAdvSDL", "HHSAdvSDL.csproj", "{52135F68-8391-97BF-CEB7-8F8CC95C1CC9}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HHSAdvSDL_Installer", "..\HHSAdvSDL_Installer\HHSAdvSDL_Installer.vdproj", "{ACC3CE70-915A-676E-3C9A-AFDAD0500DDF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,8 +14,6 @@ Global
 		{52135F68-8391-97BF-CEB7-8F8CC95C1CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52135F68-8391-97BF-CEB7-8F8CC95C1CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52135F68-8391-97BF-CEB7-8F8CC95C1CC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACC3CE70-915A-676E-3C9A-AFDAD0500DDF}.Debug|Any CPU.ActiveCfg = Debug
-		{ACC3CE70-915A-676E-3C9A-AFDAD0500DDF}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
