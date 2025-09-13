@@ -243,10 +243,9 @@ namespace HHSAdvSDL
 
         public bool Init()
         {
-            if (canvas == null || logArea == null || inputArea == null) return false;
-            canvas.Cls(canvas.GetPalleteColor(1));
-            canvas.Invalidate();
-            logArea.Draw();
+            canvas!.Cls(canvas.GetPalleteColor(1));
+            canvas!.Invalidate();
+            logArea!.Draw();
             return true;
         }
 
@@ -267,33 +266,33 @@ namespace HHSAdvSDL
         };
         private void Title()
         {
-            logArea.Clear();
+            logArea!.Clear();
             foreach (var s in title)
             {
                 logArea.Add(s);
             }
             logArea.TextColor = new SDL.SDL_Color { r = 255, g = 255, b = 255, a = 255 };
-            inputArea.Visible = false;
+            inputArea!.Visible = false;
             inputArea.HitAnyKey = true;
-            map.Cursor = 76;
-            canvas.ColorFilterType = Canvas.FilterType.None;
+            map!.Cursor = 76;
+            canvas!.ColorFilterType = Canvas.FilterType.None;
             map.Draw(canvas);
             logArea.Draw();
         }
         private void DrawScreen(bool with_msg)
         {
             IsDark();
-            map.Draw(canvas);
+            map!.Draw(canvas!);
             if (with_msg && status != GameStatus.GameOver)
             {
                 string s = map.Message;
                 if (map.IsBlank)
                 {
-                    logArea.Add(msgs.GetMessage(0xcc));
+                    logArea!.Add(msgs!.GetMessage(0xcc));
                 }
                 if (!string.IsNullOrEmpty(s))
                 {
-                    logArea.Add(s);
+                    logArea!.Add(s);
                 }
             }
             ZUserData user = ZUserData.Instance;
@@ -306,33 +305,33 @@ namespace HHSAdvSDL
                     {
                         shift = true;
                     }
-                    obj.Id = i;
-                    obj.Draw(canvas, shift);
+                    obj!.Id = i;
+                    obj.Draw(canvas!, shift);
                     if (with_msg && status != GameStatus.GameOver)
                     {
-                        logArea.Add(msgs.GetMessage(0x96 + i));
+                        logArea!.Add(msgs!.GetMessage(0x96 + i));
                     }
                 }
             }
             if (user.getFact(1) == map.Cursor)
             {
-                obj.Id = 14;
-                obj.Draw(canvas);
+                obj!.Id = 14;
+                obj.Draw(canvas!);
                 if (with_msg && status != GameStatus.GameOver)
                 {
-                    logArea.Add(msgs.GetMessage(0xb4));
+                    logArea!.Add(msgs!.GetMessage(0xb4));
                 }
             }
-            canvas.colorFilter();
+            canvas!.colorFilter();
             canvas.Invalidate();
-            inputArea.Draw();
-            logArea.Draw();
+            inputArea!.Draw();
+            logArea!.Draw();
             SDL.SDL_RenderPresent(renderer);
         }
         private void GameOver()
         {
             status = GameStatus.GameOver;
-            inputArea.Visible = false;
+            inputArea!.Visible = false;
             inputArea.HitAnyKey = true;
         }
 
@@ -343,14 +342,14 @@ namespace HHSAdvSDL
                 case SDL.SDL_EventType.SDL_KEYDOWN:
                     if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_RETURN)
                     {
-                        string input = inputArea.InputText.Trim();
+                        string input = inputArea!.InputText.Trim();
                         if (string.IsNullOrEmpty(input)) return false;
                         inputArea.InputText = string.Empty; // clear
                         StringBuilder log = new StringBuilder();
                         log.Append(">> ").Append(input);
-                        logArea.Add(log.ToString());
+                        logArea!.Add(log.ToString());
                         string[] r = input.Split(' ');
-                        ZCore.Instance.CmdId = (byte)dict.findVerb(r[0].Trim());
+                        ZCore.Instance.CmdId = (byte)dict!.findVerb(r[0].Trim());
                         ZCore.Instance.ObjId = (byte)((r.Length > 1) ? dict.findObj(r[1].Trim()) : -1);
                         TimeElapsed();
                         if (status == GameStatus.GameOver) return true;
@@ -368,11 +367,11 @@ namespace HHSAdvSDL
             bool okay = false;
             ZCore core = ZCore.Instance;
             ZUserData user = ZUserData.Instance;
-            foreach (var rule in rules.Rules)
+            foreach (var rule in rules!.Rules)
             {
                 if (rule.Evaluate())
                 {
-                    map.Cursor = core.MapId;
+                    map!.Cursor = core.MapId;
                     ZCore.ZCommand c = new ZCore.ZCommand();
                     while ((c = core.pop()).Cmd != ZCore.ZCommand.Command.Nop)
                     {
@@ -382,27 +381,27 @@ namespace HHSAdvSDL
                             case ZCore.ZCommand.Command.Nop:
                                 break;
                             case ZCore.ZCommand.Command.Message:
-                                string s = msgs.GetMessage(o);
+                                string s = msgs!.GetMessage(o);
                                 if ((o & 0x80) == 0)
                                 {
                                     s = map.Find(core.CmdId, core.ObjId);
                                 }
-                                logArea.Add(s);
+                                logArea!.Add(s);
                                 break;
                             case ZCore.ZCommand.Command.Sound:
                                 if (properties.Attrs.PlaySound)
-                                    audio.Play(o);
+                                    audio!.Play(o);
                                 break;
                             case ZCore.ZCommand.Command.Dialog:
                                 switch (o)
                                 {
                                     case 0: // boy or girl
                                         user.setFact(0, 1); // boy
-                                        dialog.Id = 0;
-                                        dialog.Open(msgs.GetMessage(0xe7), new string[] { "男子", "女子", string.Empty });
+                                        dialog!.Id = 0;
+                                        dialog.Open(msgs!.GetMessage(0xe7), new string[] { "男子", "女子", string.Empty });
                                         break;
                                     case 1:
-                                        dialog.Id = o;
+                                        dialog!.Id = o;
                                         string[] labels = new string[] { "1", "2", "3" };
                                         if (core.CmdId != 0x0f)
                                         {
@@ -429,15 +428,15 @@ namespace HHSAdvSDL
                                                 break;
                                             }
                                         }
-                                        dialog.Open(msgs.GetMessage(0xe8), labels);
+                                        dialog.Open(msgs!.GetMessage(0xe8), labels);
                                         break;
                                     case 2:
-                                        dialog.Id = o;
+                                        dialog!.Id = o;
                                         dialog.Open(user.getItemList(), new string[] { string.Empty, "OK", string.Empty });
                                         break;
                                     case 3:
-                                        dialog.Id = o;
-                                        dialog.Open(msgs.GetMessage(0xe9), new string[] { "黄", "赤", string.Empty });
+                                        dialog!.Id = o;
+                                        dialog.Open(msgs!.GetMessage(0xe9), new string[] { "黄", "赤", string.Empty });
                                         break;
                                 }
                                 break;
@@ -445,16 +444,16 @@ namespace HHSAdvSDL
                                 switch (o)
                                 {
                                     case 1: // teacher
-                                        canvas.ColorFilterType = Canvas.FilterType.Sepia;
+                                        canvas!.ColorFilterType = Canvas.FilterType.Sepia;
                                         DrawScreen(false);
                                         break;
                                     case 2: // explosion
-                                        canvas.ColorFilterType = Canvas.FilterType.Red;
+                                        canvas!.ColorFilterType = Canvas.FilterType.Red;
                                         DrawScreen(false);
                                         break;
                                     case 3: // clear
                                         if (properties.Attrs.PlaySound)
-                                            audio.Play(3);
+                                            audio!.Play(3);
                                         ZRoll endroll = new ZRoll(renderer, winW, winH);
                                         endroll.TextFont = font;
                                         endroll.Roll(credits);
@@ -466,20 +465,20 @@ namespace HHSAdvSDL
                         }
                     }
                     if (status == GameStatus.GameOver) return;
-                    logArea.Add(msgs.GetMessage(0xed)); // Ｏ．Ｋ．
+                    logArea!.Add(msgs!.GetMessage(0xed)); // Ｏ．Ｋ．
                     okay = true;
                     break;
                 }
             }
-            map.Cursor = core.MapId;
+            map!.Cursor = core.MapId;
             if (!okay)
             {
                 string s = map.Find(core.CmdId, core.ObjId);
                 if (string.IsNullOrEmpty(s))
                 {
-                    s = msgs.GetMessage(0xec); // ダメ
+                    s = msgs!.GetMessage(0xec); // ダメ
                 }
-                logArea.Add(s);
+                logArea!.Add(s);
             }
             if (map.Cursor == 74)
             {
@@ -493,7 +492,7 @@ namespace HHSAdvSDL
                 }
                 if (msg_id != 0)
                 {
-                    logArea.Add(msgs.GetMessage(msg_id));
+                    logArea!.Add(msgs!.GetMessage(msg_id));
                 }
             }
         }
@@ -559,7 +558,7 @@ namespace HHSAdvSDL
                         if (user.getFact(6) != 0)
                         {
                             // dark mode. (color in blue)
-                            canvas.ColorFilterType = Canvas.FilterType.Blue;
+                            canvas!.ColorFilterType = Canvas.FilterType.Blue;
                             dim = true;
                         }
                     }
@@ -567,14 +566,14 @@ namespace HHSAdvSDL
                     {
                         // bblack out
                         core.MapViewId = core.MapId;
-                        map.Cursor = 84;
+                        map!.Cursor = 84;
                     }
                     break;
                 default:
                     if (user.getFact(6) != 0)
                     {
                         // color back to mormal (remove color filter)
-                        canvas.ColorFilterType = Canvas.FilterType.None;
+                        canvas!.ColorFilterType = Canvas.FilterType.None;
                         dim = false;
                     }
                     break;
@@ -593,13 +592,13 @@ namespace HHSAdvSDL
                 {
                     // battery LOW
                     user.setFact(6, 1); // dim mode
-                    logArea.Add(msgs.GetMessage(0xd9));
+                    logArea!.Add(msgs!.GetMessage(0xd9));
                 }
                 else if (user.getFact(3) == 0)
                 {
                     // battery ware out
                     user.setFact(7, 0); // light off
-                    logArea.Add(msgs.GetMessage(0xc0));
+                    logArea!.Add(msgs!.GetMessage(0xc0));
                 }
             }
             if (user.getFact(11) > 0)
@@ -607,18 +606,18 @@ namespace HHSAdvSDL
                 user.setFact(11, (byte)(user.getFact(11) - 1));
                 if (user.getFact(11) == 0)
                 {
-                    logArea.Add(msgs.GetMessage(0xd8));
+                    logArea!.Add(msgs!.GetMessage(0xd8));
                     if (user.getPlace(7) == 48)
                     {
                         user.getLink(75 - 1).N = 77;
                         user.getLink(68 - 1).W = 77;
-                        logArea.Add(msgs.GetMessage(0xda));
+                        logArea.Add(msgs!.GetMessage(0xda));
                     }
-                    else if (user.getPlace(7) == 255 || user.getPlace(7) == map.Cursor)
+                    else if (user.getPlace(7) == 255 || user.getPlace(7) == map!.Cursor)
                     {
                         // suicide explosion
                         // set screen color to red
-                        canvas.ColorFilterType = Canvas.FilterType.Red;
+                        canvas!.ColorFilterType = Canvas.FilterType.Red;
                         logArea.Add(msgs.GetMessage(0xcf));
                         logArea.Add(msgs.GetMessage(0xcb));
                         GameOver();
@@ -639,10 +638,10 @@ namespace HHSAdvSDL
                     || e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE)
                     return false;
 
-                map.Cursor = 1;
-                inputArea.InputText = string.Empty;
+                map!.Cursor = 1;
+                inputArea!.InputText = string.Empty;
                 inputArea.Visible = true;
-                logArea.Clear();
+                logArea!.Clear();
                 status = GameStatus.Play;
                 SDL.SDL_FlushEvent(SDL.SDL_EventType.SDL_KEYDOWN);
                 SDL.SDL_FlushEvent(SDL.SDL_EventType.SDL_TEXTINPUT);
@@ -706,13 +705,12 @@ namespace HHSAdvSDL
                     user.unpack(br.ReadBytes(user.packedSize));
                 }
             }
-            map.Cursor = core.MapId;
+            map!.Cursor = core.MapId;
         }
         public void Loop()
         {
             bool quit = false;
-            if (inputArea == null || logArea == null || canvas == null || dialog == null || map == null || obj == null || dict == null) return;
-            inputArea.Draw();
+            inputArea!.Draw();
 
             Title();
             SDL.SDL_StartTextInput();
@@ -724,7 +722,7 @@ namespace HHSAdvSDL
 
                     if (et == SDL.SDL_EventType.SDL_QUIT) { quit = true; break; }
 
-                    if (dialog.Visible)
+                    if (dialog!.Visible)
                     {
                         if (dialog.HandleEvent(e, et))
                         {
@@ -738,7 +736,7 @@ namespace HHSAdvSDL
                                     {
                                         case 0:
                                             user.setFact(0, (byte)(dialog.ResultIndex + 1));
-                                            map.Cursor = 3;
+                                            map!.Cursor = 3;
 
                                             break;
                                         case 1:
@@ -757,19 +755,19 @@ namespace HHSAdvSDL
                                         case 3:
                                             if (user.getPlace(11) != 0xff)
                                             {
-                                                logArea.Add(msgs.GetMessage(0xe0));
+                                                logArea!.Add(msgs!.GetMessage(0xe0));
                                             }
                                             if (dialog.ResultIndex == 0 || user.getPlace(11) != 0xff)
                                             {
                                                 // Game Over
-                                                canvas.ColorFilterType = Canvas.FilterType.Red;
-                                                logArea.Add(msgs.GetMessage(0xc7));
+                                                canvas!.ColorFilterType = Canvas.FilterType.Red;
+                                                logArea!.Add(msgs!.GetMessage(0xc7));
                                                 logArea.Add(msgs.GetMessage(0xee));
                                                 GameOver();
                                                 break;
                                             }
                                             user.setPlace(11, 0);
-                                            map.Cursor = 74;
+                                            map!.Cursor = 74;
                                             //audio.Play(3);
                                             break;
                                     }
@@ -808,29 +806,29 @@ namespace HHSAdvSDL
                             else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_RETURN && inputArea.InputText.Length > 0)
                             {
 
-                                logArea.Add(inputArea.InputText);
+                                logArea!.Add(inputArea.InputText);
                                 inputArea.InputText = "";
                                 logArea.TopPtr = 0;
                             }
-                            else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_PAGEUP) logArea.Scroll(+1);
-                            else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_PAGEDOWN) logArea.Scroll(-1);
+                            else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_PAGEUP) logArea!.Scroll(+1);
+                            else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_PAGEDOWN) logArea!.Scroll(-1);
                             else if (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE)
                                 quit = true;
                             inputArea.Draw();
-                            logArea.Draw();
+                            logArea!.Draw();
                             break;
 
                         case SDL.SDL_EventType.SDL_MOUSEWHEEL:
-                            if (e.wheel.y > 0) logArea.Scroll(+1);
-                            else if (e.wheel.y < 0) logArea.Scroll(-1);
-                            logArea.Draw();
+                            if (e.wheel.y > 0) logArea!.Scroll(+1);
+                            else if (e.wheel.y < 0) logArea!.Scroll(-1);
+                            logArea!.Draw();
                             break;
                     }
                 }
-                canvas.Draw();
-                logArea.Draw();
+                canvas!.Draw();
+                logArea!.Draw();
                 inputArea.Draw();
-                if (dialog.Visible) dialog.Draw();
+                if (dialog!.Visible) dialog.Draw();
                 SDL.SDL_RenderPresent(renderer);
                 SDL.SDL_Delay(16); // ~60fps
             }
