@@ -6,6 +6,7 @@ High High School Adventure for SDL2
 [SDL2](https://github.com/libsdl-org/SDL.git) 向けのものです。
 
 ## 遊び方
+
 ~~データファイルを AppData\Local\HHSAdvSDL の下に置いてください。
 Linuxでは ~/.local/share/HHSADvSDLになります。~~
 
