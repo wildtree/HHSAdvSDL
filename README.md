@@ -6,8 +6,10 @@ High High School Adventure for SDL2
 [SDL2](https://github.com/libsdl-org/SDL.git) 向けのものです。
 
 ## 遊び方
-データファイルを AppData\Local\HHSAdvSDL の下に置いてください。
-Linuxでは ~/.local/share/HHSADvSDLになります。
+~~データファイルを AppData\Local\HHSAdvSDL の下に置いてください。
+Linuxでは ~/.local/share/HHSADvSDLになります。~~
+
+データは必要に応じて自動的にデータフォルダーにコピーされます。
 
 ビルドには net8.0 フレームワークへの依存性があります。
 また SDL2-CS.dllにも依存しています。
