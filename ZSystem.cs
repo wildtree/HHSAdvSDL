@@ -6,6 +6,7 @@ using System.Text;
 using System.Data;
 using Microsoft.VisualBasic;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace HHSAdvSDL
 {
@@ -35,6 +36,11 @@ namespace HHSAdvSDL
         private ZRules? rules = null;
         private ZAudio? audio = null;
         private ZProperties properties = new ZProperties();
+        private class VersionAttributes
+        {
+            public int version { get; set; } = 0;
+        }
+        private VersionAttributes version = new VersionAttributes();
 
         private string[] credits = {
             @"High High School Adventure",
@@ -131,6 +137,8 @@ namespace HHSAdvSDL
         private ZSystem()
         {
             dataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HHSAdvSDL");
+            string srcdir = Path.Combine(AppContext.BaseDirectory, "data");
+            CopyData(srcdir);
             properties.Load(Path.Combine(dataFolder, @"HHSAdvSDL.json"));
 
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO|SDL.SDL_INIT_AUDIO);
@@ -834,6 +842,56 @@ namespace HHSAdvSDL
             }
             properties.Save(Path.Combine(dataFolder, @"HHSAdvSDL.json"));
         }
+        
+        private int GetVersion(string dirName)
+        {
+            string fileName = System.IO.Path.Combine(dirName, "version.json");
+            if (!File.Exists(fileName)) return 0;
+            string jsonString = File.ReadAllText(fileName);
+            if (string.IsNullOrEmpty(jsonString))
+            {
+                return 0;
+            }
+            var deserializedAttributes = JsonSerializer.Deserialize<VersionAttributes>(jsonString);
+            if (deserializedAttributes == null)
+            {
+                return 0;
+            }
+            version = deserializedAttributes;
+            return version.version;
+        }
+
+        private bool CopyData(string srcDir)
+        {
+            if (!Directory.Exists(srcDir)) return false;
+            if (!Directory.Exists(dataFolder)) Directory.CreateDirectory(dataFolder);
+            int srcVer = GetVersion(srcDir);
+            int dstVer = GetVersion(dataFolder);
+            if (srcVer > dstVer)
+            {
+                return CopyRecursive(srcDir, dataFolder);
+            }
+            return true;
+        }
+
+        private bool CopyRecursive(string srcDir, string dstDir)
+        {
+            if (!Directory.Exists(srcDir)) return false;
+            if (!Directory.Exists(dstDir)) Directory.CreateDirectory(dstDir);
+            foreach (var srcPath in Directory.GetFiles(srcDir))
+            {
+                string fileName = Path.GetFileName(srcPath);
+                string dstPath = System.IO.Path.Combine(dstDir, fileName);
+                File.Copy(srcPath, dstPath, true);
+            }
+            foreach (var subDir in Directory.GetDirectories(srcDir))
+            {
+                string dirName = Path.GetFileName(subDir);
+                string dstSubDir = System.IO.Path.Combine(dstDir, dirName);
+                CopyRecursive(subDir, dstSubDir);
+            }
+            return true;
+        }
 
         private class TextInputArea
         {
@@ -863,7 +921,8 @@ namespace HHSAdvSDL
             public IntPtr TextFont { get; set; } = IntPtr.Zero;
             private IntPtr renderer = IntPtr.Zero;
             private bool visible = true;
-            public bool Visible {
+            public bool Visible
+            {
                 get
                 {
                     return visible;

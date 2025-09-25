@@ -11,4 +11,13 @@
     <PackageReference Include="SDL2-CS" Version="2.0.0" />
     <PackageReference Include="SDL2-CS.NetCore" Version="2.0.8" />
   </ItemGroup>
+  <ItemGroup>
+  <!-- data 以下のすべてのファイルを対象にする -->
+    <Content Include="data\**\*.*">
+      <!-- 出力先にコピーするルール -->
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <!-- フォルダ構造を保持する -->
+      <Link>data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
 </Project>
