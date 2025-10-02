@@ -51,6 +51,7 @@ namespace HHSAdvSDL
             @"Qt version: hiro © 2024-2025",
             @"PicoCalc version: hiro © 2025",
             @"SDL version: hiro © 2025",
+            @"Windows version: hiro © 2025",
             @"",
             @"- Project ZOBPlus -",
             @"Hayami <hayami@zob.jp>",
